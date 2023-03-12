@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:dcdg/dcdg.dart';
 
 class CardWidget extends StatelessWidget {
   final Color? color;

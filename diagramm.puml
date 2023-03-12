@@ -1,0 +1,74 @@
+@startuml
+set namespaceSeparator ::
+
+class "bmi_calc::main.dart::MyApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "bmi_calc::main.dart::MyApp"
+
+class "bmi_calc::main.dart::MyHomePage" {
+  +State<MyHomePage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bmi_calc::main.dart::MyHomePage"
+
+class "bmi_calc::main.dart::_MyHomePageState" {
+  +TextEditingController controllerWeight
+  +TextEditingController controllerAge
+  +Gender gender
+  +int height
+  +int age
+  +double weight
+  +void dispose()
+  -dynamic _write()
+  -Future<String?> _read()
+  +Widget build()
+}
+
+"bmi_calc::main.dart::_MyHomePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bmi_calc::main.dart::_MyHomePageState" o-- "bmi_calc::main.dart::Gender"
+"flutter::src::widgets::framework.dart::State" <|-- "bmi_calc::main.dart::_MyHomePageState"
+
+class "bmi_calc::main.dart::Gender" {
+  +int index
+  {static} +List<Gender> values
+  {static} +Gender male
+  {static} +Gender female
+}
+
+"bmi_calc::main.dart::Gender" o-- "bmi_calc::main.dart::Gender"
+"dart::core::Enum" <|-- "bmi_calc::main.dart::Gender"
+
+class "bmi_calc::result_page.dart::ResultPage" {
+  +dynamic bmi
+  +String? desc
+  +TextStyle? resultColorBMI
+  +dynamic prefBMI
+  +Widget build()
+}
+
+"bmi_calc::result_page.dart::ResultPage" o-- "flutter::src::painting::text_style.dart::TextStyle"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "bmi_calc::result_page.dart::ResultPage"
+
+class "bmi_calc::storages::BMIStorage.dart::BMIStorage" {
+  -Future<String> _localPath
+  -Future<File> _localFile
+  +Future<int> readData()
+  +Future<File> writeData()
+}
+
+class "bmi_calc::widgets::CardWidget.dart::CardWidget" {
+  +Color? color
+  +Widget? child
+  +dynamic Function()? onTap
+  +Widget build()
+}
+
+"bmi_calc::widgets::CardWidget.dart::CardWidget" o-- "dart::ui::Color"
+"bmi_calc::widgets::CardWidget.dart::CardWidget" o-- "flutter::src::widgets::framework.dart::Widget"
+"bmi_calc::widgets::CardWidget.dart::CardWidget" o-- "null::dynamic Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "bmi_calc::widgets::CardWidget.dart::CardWidget"
+
+
+@enduml
