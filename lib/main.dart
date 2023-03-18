@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 var lines = [];
-enum Gender {
-  male, female
-}
+
+enum Gender { male, female }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -58,7 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/my_file.txt');
     String date = DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now());
-    file.openWrite(mode: FileMode.append).write('ИМТ: $text\nДата и время: $date\n');
+    file
+        .openWrite(mode: FileMode.append)
+        .write('ИМТ: $text\nДата и время: $date\n');
   }
 
   Future<String?> _read() async {
@@ -79,6 +81,73 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    onTap() async {
+      final weight = double.parse(controllerWeight.text);
+      final resultHeight = pow(height / 100, 2);
+      final bmi = weight / resultHeight;
+      await _write(bmi.toStringAsFixed(1));
+      String descriptionBMI = '';
+      TextStyle resultColorBMI =
+          const TextStyle(fontSize: 30, fontWeight: FontWeight.w900);
+      if (gender == Gender.male) {
+        if (bmi < 20) {
+          descriptionBMI = 'Дефицит веса';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.cyan);
+        } else if (bmi >= 20 && bmi < 25) {
+          descriptionBMI = 'Норма';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.green);
+        } else if (bmi >= 25 && bmi < 30) {
+          descriptionBMI = 'Незначительный\nизбыточный\nвес';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.yellow);
+        } else if (bmi >= 30 && bmi < 40) {
+          descriptionBMI = 'Ожирение';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.orange);
+        } else {
+          descriptionBMI = 'Сильное ожирение';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.red);
+        }
+      } else {
+        if (bmi < 19) {
+          descriptionBMI = 'Дефицит веса';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.cyan);
+        } else if (bmi >= 19 && bmi < 24) {
+          descriptionBMI = 'Норма';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.green);
+        } else if (bmi >= 24 && bmi < 30) {
+          descriptionBMI = 'Незначительный\nизбыточный\nвес';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.yellow);
+        } else if (bmi >= 30 && bmi < 40) {
+          descriptionBMI = 'Ожирение';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.orange);
+        } else {
+          descriptionBMI = 'Сильное ожирение';
+          resultColorBMI = const TextStyle(
+              fontSize: 30, fontWeight: FontWeight.w900, color: Colors.red);
+        }
+      }
+      var g = await _read();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultPage(
+              bmi: bmi,
+              desc: descriptionBMI,
+              resultColorBMI: resultColorBMI,
+              prefBMI: g
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: const Center(
@@ -92,12 +161,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Expanded(
                   child: CardWidget(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         gender = Gender.male;
                       });
                     },
-                    color: gender == Gender.male ? CardColorActive : CardColorInactive,
+                    color: gender == Gender.male
+                        ? CardColorActive
+                        : CardColorInactive,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -115,12 +186,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Expanded(
                   child: CardWidget(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         gender = Gender.female;
                       });
                     },
-                    color: gender == Gender.female ? CardColorActive : CardColorInactive,
+                    color: gender == Gender.female
+                        ? CardColorActive
+                        : CardColorInactive,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -154,9 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Text(
                           height.toString(),
                           style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 40
-                          ),
+                              fontWeight: FontWeight.w700, fontSize: 40),
                         ),
                         Slider(
                           value: height.toDouble(),
@@ -231,65 +302,21 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             )),
             GestureDetector(
-              onTap: () async {
-                final weight = double.parse(controllerWeight.text);
-                final resultHeight = pow(height/100, 2);
-                final bmi = weight/resultHeight;
-                await _write(bmi.toStringAsFixed(1));
-                String descriptionBMI = '';
-                TextStyle resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900);
-                if (gender == Gender.male) {
-                  if (bmi < 20) {
-                    descriptionBMI = 'Дефицит веса';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.cyan);
-                  } else if (bmi >= 20 && bmi < 25) {
-                    descriptionBMI = 'Норма';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.green);
-                  } else if (bmi >= 25 && bmi < 30) {
-                    descriptionBMI = 'Незначительный\nизбыточный\nвес';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.yellow);
-                  } else if (bmi >= 30 && bmi < 40) {
-                    descriptionBMI = 'Ожирение';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.orange);
-                  } else {
-                    descriptionBMI = 'Сильное ожирение';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.red);
-                  }
-                } else {
-                  if (bmi < 19) {
-                    descriptionBMI = 'Дефицит веса';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.cyan);
-                  } else if (bmi >= 19 && bmi < 24) {
-                    descriptionBMI = 'Норма';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.green);
-                  } else if (bmi >= 24 && bmi < 30) {
-                    descriptionBMI = 'Незначительный\nизбыточный\nвес';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.yellow);
-                  } else if (bmi >= 30 && bmi < 40) {
-                    descriptionBMI = 'Ожирение';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.orange);
-                  } else {
-                    descriptionBMI = 'Сильное ожирение';
-                    resultColorBMI = const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.red);
-                  }
-                }
-                var g = await _read();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(bmi: bmi, desc: descriptionBMI, resultColorBMI: resultColorBMI, prefBMI: g)));
-              },
-              child: SizedBox(
-                child: Container(
-                  height: 60,
-                  color: Colors.deepOrange,
-                  child: Center(
-                    child: Text('Вычислить результат'.toUpperCase(), style: const TextStyle(fontSize: 16),),
+                onTap: onTap,
+                child: SizedBox(
+                  child: Container(
+                    height: 60,
+                    color: Colors.deepOrange,
+                    child: Center(
+                      child: Text(
+                        'Вычислить результат'.toUpperCase(),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
-                ),
-              )
-            )
+                ))
           ],
         ) // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
 }
-
-
